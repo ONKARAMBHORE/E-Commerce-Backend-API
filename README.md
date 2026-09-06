@@ -223,6 +223,3 @@ coverage report
 
 Python Backend Developer
 
-
-
-GitHub: https://github.com/your-github
