@@ -1,225 +1,154 @@
-# 🛒 Ecommerce Backend API
+# Ecommerce Backend API
 
-A production-style Ecommerce Backend built using Django and Django REST Framework. This project provides REST APIs for user authentication, product management, cart, wishlist, orders, payments, shipping, coupons, and notifications. It follows a modular architecture where each feature is organized into a separate Django app, making the project clean, scalable, and easy to maintain.
+A Django REST Framework backend for an ecommerce application. It includes JWT authentication, products, cart, wishlist, coupons, orders, shipping, Razorpay payments, notifications, PostgreSQL, Redis, and Celery.
 
----
+## Features
 
-## 🚀 Features
+- User registration, login, JWT refresh, and role-based permissions
+- Product, category, brand, image, and review APIs
+- Cart, wishlist, coupon, shipping, and order management
+- Cash on delivery and Razorpay payment integration
+- Email and in-app notifications
+- Swagger and ReDoc API documentation
+- Pytest test configuration
+- Docker Compose services for Django, PostgreSQL, Redis, and Celery
 
-- User Registration & Login
-- JWT Authentication
-- Role-Based Authorization
-- Product & Category Management
-- Product Reviews
-- Wishlist
-- Shopping Cart
-- Coupon System
-- Shipping Address Management
-- Order Management
-- Payment Integration (Cash on Delivery & Razorpay)
-- Email Notifications
-- Admin Dashboard APIs
-- Swagger API Documentation
-- Unit Testing
-- PostgreSQL Database Support
+## Requirements
 
----
+- Python 3.13+
+- Docker Desktop for the containerized setup
+- PostgreSQL and Redis when running Django locally
 
-## 🛠️ Tech Stack
+## Quick Start With Docker
 
-- Python
-- Django
-- Django REST Framework
-- PostgreSQL
-- JWT Authentication
-- Razorpay
-- Swagger (drf-spectacular)
-- Docker
-- Git & GitHub
-- Postman
+1. Clone the repository and enter the project directory:
 
----
-
-## 📁 Project Structure
-
-```
-ecommerce_backend/
-│
-├── apps/
-│   ├── accounts/
-│   ├── products/
-│   ├── wishlist/
-│   ├── cart/
-│   ├── coupons/
-│   ├── shipping/
-│   ├── orders/
-│   ├── payments/
-│   └── notifications/
-│
-├── ecommerce_backend/
-├── media/
-├── static/
-├── manage.py
-├── requirements.txt
-└── .env.example
+```powershell
+git clone https://github.com/ONKARAMBHORE/E-Commerce-Backend-API.git
+cd E-Commerce-Backend-API
 ```
 
----
+2. Create local environment values:
 
-## ⚙️ Installation
-
-### Clone Repository
-
-```bash
-git clone https://github.com/your-username/ecommerce-backend.git
-
-cd ecommerce-backend
+```powershell
+Copy-Item .env.example .env
 ```
 
-### Create Virtual Environment
+Update `.env` with real email and Razorpay credentials if those features are needed. Never commit `.env`.
 
-```bash
+3. Build and start the complete stack:
+
+```powershell
+docker compose up --build
+```
+
+The API is available at `http://127.0.0.1:8000/`.
+
+Run it in the background with `docker compose up -d --build`. Stop it with `docker compose down`.
+
+## Local Development
+
+Create and activate a virtual environment:
+
+```powershell
 python -m venv venv
+.\venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-### Activate Environment
+Start PostgreSQL and Redis with Docker:
 
-Windows
-
-```bash
-venv\Scripts\activate
+```powershell
+docker compose up -d db redis
 ```
 
-Linux / macOS
+Copy `.env.example` to `.env`, then apply migrations and start Django:
 
-```bash
-source venv/bin/activate
-```
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Configure Environment Variables
-
-Create a `.env` file and add the required environment variables.
-
-### Apply Migrations
-
-```bash
-python manage.py makemigrations
-
+```powershell
+Copy-Item .env.example .env
 python manage.py migrate
+python manage.py runserver 8080
 ```
 
-### Run Server
+Open `http://127.0.0.1:8080/`.
 
-```bash
-python manage.py runserver
+Start Celery in a second terminal while Redis is running:
+
+```powershell
+celery -A ecommerce_backend worker --loglevel=info
 ```
 
-Server will start at
+## Environment Variables
 
-```
-http://127.0.0.1:8000/
-```
+The supported variables are documented in `.env.example`:
 
----
+| Variable | Purpose |
+| --- | --- |
+| `SECRET_KEY` | Django secret key |
+| `DEBUG` | Enable development mode |
+| `ALLOWED_HOSTS` | Comma-separated allowed hosts |
+| `DB_NAME`, `DB_USER`, `DB_PASSWORD` | PostgreSQL credentials |
+| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP credentials |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` | Razorpay credentials |
 
-## 📖 API Documentation
+Docker supplies `DB_HOST`, `DB_PORT`, `REDIS_URL`, `CELERY_BROKER_URL`, and `CELERY_RESULT_BACKEND` automatically.
 
-Swagger UI
+## API Documentation
 
-```
-http://127.0.0.1:8000/api/docs/
-```
+When the server is running:
 
-ReDoc
+- Swagger UI: `http://127.0.0.1:8080/api/docs/`
+- ReDoc: `http://127.0.0.1:8080/api/redoc/`
+- OpenAPI schema: `http://127.0.0.1:8080/api/schema/`
 
-```
-http://127.0.0.1:8000/api/redoc/
-```
+Main API prefixes are `/api/accounts/`, `/api/products/`, `/api/cart/`, `/api/orders/`, `/api/payments/`, `/api/shipping/`, `/api/wishlist/`, `/api/coupons/`, and `/api/notifications/`.
 
----
+## Testing
 
-## 🔄 Project Workflow
+Run all tests with pytest:
 
-```
-Register
-      ↓
-Login
-      ↓
-Browse Products
-      ↓
-Wishlist
-      ↓
-Cart
-      ↓
-Apply Coupon
-      ↓
-Shipping Address
-      ↓
-Checkout
-      ↓
-Create Order
-      ↓
-Payment
-      ↓
-Notification
+```powershell
+pytest
 ```
 
----
+Run a specific app:
 
-## 📌 Main Modules
-
-- Accounts
-- Products
-- Wishlist
-- Cart
-- Coupons
-- Shipping
-- Orders
-- Payments
-- Notifications
-
----
-
-## 🔒 Authentication
-
-This project uses JWT Authentication.
-
-After login, the user receives:
-
-- Access Token
-- Refresh Token
-
-These tokens are required to access protected APIs.
-
----
-
-## 🧪 Testing
-
-Run all tests
-
-```bash
-python manage.py test
+```powershell
+pytest apps/products/tests.py
 ```
 
-Run coverage
+Run tests inside Docker:
 
-```bash
-coverage run manage.py test
-
-coverage report
+```powershell
+docker compose run --rm web pytest
 ```
 
----
+Tests require PostgreSQL. Start it first with `docker compose up -d db` when running pytest locally.
 
-## 👨‍💻 Author
+## Project Structure
 
-**Onkar Ambhore**
+```text
+apps/                  Django feature applications
+ecommerce_backend/     Django settings, URLs, WSGI, ASGI, and Celery
+media/                 User-uploaded media directory
+static/                Static assets
+Dockerfile             Django container image
+docker-compose.yml     Django, PostgreSQL, Redis, and Celery services
+pytest.ini              Pytest-Django configuration
+requirements.txt       Python dependencies
+```
 
-Python Backend Developer
+## Security Notes
 
+- Do not commit `.env`, API keys, passwords, or private credentials.
+- Use a strong unique `SECRET_KEY` outside local development.
+- Set `DEBUG=0` and configure production `ALLOWED_HOSTS` before deployment.
+- Review payment and email credentials before sharing the repository publicly.
+
+## License
+
+No license has been selected yet. Add a `LICENSE` file before publishing if you want others to reuse this project under a specific license.
+
+## Author
+
+Onkar Ambhore

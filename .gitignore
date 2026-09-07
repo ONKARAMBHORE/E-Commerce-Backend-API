@@ -10,14 +10,14 @@ ENV/
 
 .env
 .env.*
+!.env.example
 
 *.log
 db.sqlite3
 media/
 staticfiles/
 
-**/migrations/*.py
-!**/migrations/__init__.py
+# Keep Django migrations in Git; fresh installations need them to build the database.
 
 .pytest_cache/
 .coverage
